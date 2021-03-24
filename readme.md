@@ -1,4 +1,7 @@
+![Laravel Roles](https://github-project-images.s3-us-west-2.amazonaws.com/laravel-blocker/laravel-roles-logo.png)
+
 # Laravel Roles
+A Powerful package for handling roles and permissions in Laravel. Supports Laravel 5.3, 5.4, 5.5, 5.6, 5.7, 5.8, 6.0, 7.0, and 8.0+.
 
 [![Total Downloads](https://poser.pugx.org/jeremykenedy/laravel-roles/d/total.svg)](https://packagist.org/packages/jeremykenedy/laravel-roles)
 [![Latest Stable Version](https://poser.pugx.org/jeremykenedy/laravel-roles/v/stable.svg)](https://packagist.org/packages/jeremykenedy/laravel-roles)
@@ -9,12 +12,8 @@
 [![Code Intelligence Status](https://scrutinizer-ci.com/g/jeremykenedy/laravel-roles/badges/code-intelligence.svg?b=master)](https://scrutinizer-ci.com/code-intelligence)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![MadeWithLaravel.com shield](https://madewithlaravel.com/storage/repo-shields/1363-shield.svg)](https://madewithlaravel.com/p/laravel-roles/shield-link)
-<a href="https://www.patreon.com/bePatron?u=10119959" title="Become a Patreon">
-    <img src="https://c5.patreon.com/external/logo/become_a_patron_button.png" alt="Become a Patreon" width="85px" > 
-</a>
 
 #### Table of contents
-- [About](#about)
 - [Features](#features)
 - [Installation](#installation)
     - [Composer](#composer)
@@ -33,7 +32,7 @@
     - [Creating Permissions](#creating-permissions)
     - [Attaching, Detaching and Syncing Permissions](#attaching-detaching-and-syncing-permissions)
     - [Checking For Permissions](#checking-for-permissions)
-    - [Permissions Inheriting](#permissions-inheriting)
+    - [Permissions Inheritance](#permissions-inheritance)
     - [Entity Check](#entity-check)
     - [Blade Extensions](#blade-extensions)
     - [Middleware](#middleware)
@@ -45,10 +44,6 @@
 - [File Tree](#file-tree)
 - [Opening an Issue](#opening-an-issue)
 - [License](#license)
-
-## About
-A Powerful package for handling roles and permissions in Laravel.
-Supports Laravel 5.3, 5.4, 5.5, 5.6, 5.7, 5.8, and 6.0.
 
 ## Features
 | Laravel Roles Features  |
@@ -112,6 +107,8 @@ Add the package to your application service providers in `config/app.php` file.
     php artisan vendor:publish --tag=laravelroles-config
     php artisan vendor:publish --tag=laravelroles-migrations
     php artisan vendor:publish --tag=laravelroles-seeds
+    php artisan vendor:publish --tag=laravelroles-views
+    php artisan vendor:publish --tag=laravelroles-lang
 ```
 
 ### HasRoleAndPermission Trait And Contract
@@ -158,9 +155,9 @@ class User extends Authenticatable
 
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
-use Database\Seeds\PermissionsTableSeeder;
-use Database\Seeds\RolesTableSeeder;
-use Database\Seeds\ConnectRelationshipsSeeder;
+use Database\Seeders\PermissionsTableSeeder
+use Database\Seeders\RolesTableSeeder;
+use Database\Seeders\ConnectRelationshipsSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -421,15 +418,15 @@ if ($user->canDeleteUsers()) {
 
 You can check for multiple permissions the same way as roles. You can make use of additional methods like `hasOnePermission` or `hasAllPermissions`.
 
-### Permissions Inheriting
+### Permissions Inheritance
 
-Role with higher level is inheriting permission from roles with lower level.
+By default, roles with higher level inherit all permissions from roles with lower level.
 
-There is an example of this `magic`:
+For example:
 
-You have three roles: `user`, `moderator` and `admin`. User has a permission to read articles, moderator can manage comments and admin can create articles. User has a level 1, moderator level 2 and admin level 3. It means, moderator and administrator has also permission to read articles, but administrator can manage comments as well.
+You have three roles: `user`, `moderator` and `admin`. User has a permission to read articles, moderator can manage comments and admin can create articles. User has a level 1, moderator level 2 and admin level 3. With inheritance enabled, moderator and administrator also have the permission to read articles, and administrator can manage comments as well.
 
-> If you don't want permissions inheriting feature in you application, simply ignore `level` parameter when you're creating roles.
+> If you don't want the permissions inheritance feature enabled in you application, set the config value roles.inheritance (or its corresponding .env parameter, ROLES_INHERITANCE) to false. Alternatively, simply ignore the `level` parameter when you're creating roles.
 
 ### Entity Check
 
@@ -510,9 +507,9 @@ protected $routeMiddleware = [
     'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
     'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
     'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
-    'role'          => \jeremykenedy\LaravelRoles\Middleware\VerifyRole::class,
-    'permission'    => \jeremykenedy\LaravelRoles\Middleware\VerifyPermission::class,
-    'level'         => \jeremykenedy\LaravelRoles\Middleware\VerifyLevel::class,
+    'role' => \jeremykenedy\LaravelRoles\App\Http\Middleware\VerifyRole::class,
+    'permission' => \jeremykenedy\LaravelRoles\App\Http\Middleware\VerifyPermission::class,
+    'level' => \jeremykenedy\LaravelRoles\App\Http\Middleware\VerifyLevel::class,
 ];
 ```
 
@@ -1064,7 +1061,7 @@ For more information, please have a look at [HasRoleAndPermission](https://githu
 
 ## Opening an Issue
 Before opening an issue there are a couple of considerations:
-* A **star** on this project shows support and is way to say thank you to all the contributors. If you open an issue without a star, *your issue may be closed without consideration.* Thank you for understanding and the support. You are all awesome!
+* You are all awesome!
 * **Read the instructions** and make sure all steps were *followed correctly*.
 * **Check** that the issue is not *specific to your development environment* setup.
 * **Provide** *duplication steps*.

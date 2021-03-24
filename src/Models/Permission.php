@@ -2,17 +2,17 @@
 
 namespace jeremykenedy\LaravelRoles\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use jeremykenedy\LaravelRoles\Contracts\PermissionHasRelations as PermissionHasRelationsContract;
-use jeremykenedy\LaravelRoles\Traits\DatabaseTraits;
+use jeremykenedy\LaravelRoles\Database\Database;
 use jeremykenedy\LaravelRoles\Traits\PermissionHasRelations;
 use jeremykenedy\LaravelRoles\Traits\Slugable;
 
-class Permission extends Model implements PermissionHasRelationsContract
+class Permission extends Database implements PermissionHasRelationsContract
 {
-    use DatabaseTraits, PermissionHasRelations, Slugable, SoftDeletes;
-
+    use PermissionHasRelations;
+    use Slugable;
+    use SoftDeletes;
     /**
      * The attributes that are not mass assignable.
      *

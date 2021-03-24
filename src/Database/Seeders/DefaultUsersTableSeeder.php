@@ -1,8 +1,10 @@
 <?php
 
+namespace jeremykenedy\LaravelRoles\Database\Seeders;
+
 use Illuminate\Database\Seeder;
 
-class UsersTableSeeder extends Seeder
+class DefaultUsersTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -19,6 +21,8 @@ class UsersTableSeeder extends Seeder
          * Add Users
          *
          */
+        echo "\e[32mSeeding:\e[0m DefaultUsersTableSeeder\r\n";
+
         if (config('roles.models.defaultUser')::where('email', '=', 'admin@admin.com')->first() === null) {
             $newUser = config('roles.models.defaultUser')::create([
                 'name'     => 'Admin',
@@ -30,6 +34,7 @@ class UsersTableSeeder extends Seeder
             foreach ($permissions as $permission) {
                 $newUser->attachPermission($permission);
             }
+            echo "\e[32mSeeding:\e[0m DefaultUsersTableSeeder - User:admin@admin.com\r\n";
         }
 
         if (config('roles.models.defaultUser')::where('email', '=', 'user@user.com')->first() === null) {
@@ -39,8 +44,8 @@ class UsersTableSeeder extends Seeder
                 'password' => bcrypt('password'),
             ]);
 
-            $newUser;
             $newUser->attachRole($userRole);
+            echo "\e[32mSeeding:\e[0m DefaultUsersTableSeeder - User:user@user.com\r\n";
         }
     }
 }

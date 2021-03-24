@@ -52,6 +52,20 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Inheritance
+    |--------------------------------------------------------------------------
+    |
+    | By default, the plugin is configured so that all roles inherit all
+    | permissions applied to roles defined at a lower level than the role in
+    | question. If this is not desired, setting the below to false will disable
+    | this inheritance
+    |
+    */
+
+    'inheritance' => env('ROLES_INHERITANCE', true),
+
+    /*
+    |--------------------------------------------------------------------------
     | Roles, Permissions and Allowed "Pretend"
     |--------------------------------------------------------------------------
     |
@@ -69,7 +83,20 @@ return [
             'allowed'       => true,
         ],
     ],
+    /*
+    |--------------------------------------------------------------------------
+    | Default Migrations
+    |--------------------------------------------------------------------------
+    |
+    | These are the default package migrations. If you publish the migrations
+    | to your project, then this is not necessary and should be disabled. This
+    | will enable our default migrations.
+    |
+    */
 
+    'defaultMigrations' => [
+        'enabled'        => env('ROLES_MIGRATION_DEFAULT_ENABLED', false),
+    ],
     /*
     |--------------------------------------------------------------------------
     | Default Seeds
@@ -182,11 +209,11 @@ return [
 
     // User Permissions or Role needed to create a new role
     'rolesAPICreateNewRolesMiddlewareType'   => env('ROLES_API_CREATE_ROLE_MIDDLEWARE_TYPE', 'role'), //permissions or roles
-    'rolesAPICreateNewRolesMiddleware'       => env('ROLES_API_CREATE_ROLE_MIDDLEWARE_TYPE', 'admin'), // admin, XXX. ... or perms.XXX
+    'rolesAPICreateNewRolesMiddleware'       => env('ROLES_API_CREATE_ROLE_MIDDLEWARE', 'admin'), // admin, XXX. ... or perms.XXX
 
     // User Permissions or Role needed to create a new permission
     'rolesAPICreateNewPermissionMiddlewareType'  => env('ROLES_API_CREATE_PERMISSION_MIDDLEWARE_TYPE', 'role'), //permissions or roles
-    'rolesAPICreateNewPermissionsMiddleware'     => env('ROLES_API_CREATE_PERMISSION_MIDDLEWARE_TYPE', 'admin'), // admin, XXX. ... or perms.XXX
+    'rolesAPICreateNewPermissionsMiddleware'     => env('ROLES_API_CREATE_PERMISSION_MIDDLEWARE', 'admin'), // admin, XXX. ... or perms.XXX
 
     /*
     |--------------------------------------------------------------------------

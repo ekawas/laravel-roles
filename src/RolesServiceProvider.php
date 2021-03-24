@@ -6,10 +6,10 @@ use Illuminate\Support\ServiceProvider;
 use jeremykenedy\LaravelRoles\App\Http\Middleware\VerifyLevel;
 use jeremykenedy\LaravelRoles\App\Http\Middleware\VerifyPermission;
 use jeremykenedy\LaravelRoles\App\Http\Middleware\VerifyRole;
-use jeremykenedy\LaravelRoles\Database\Seeds\DefaultConnectRelationshipsSeeder;
-use jeremykenedy\LaravelRoles\Database\Seeds\DefaultPermissionsTableSeeder;
-use jeremykenedy\LaravelRoles\Database\Seeds\DefaultRolesTableSeeder;
-use jeremykenedy\LaravelRoles\Database\Seeds\DefaultUsersTableSeeder;
+use jeremykenedy\LaravelRoles\Database\Seeders\DefaultConnectRelationshipsSeeder;
+use jeremykenedy\LaravelRoles\Database\Seeders\DefaultPermissionsTableSeeder;
+use jeremykenedy\LaravelRoles\Database\Seeders\DefaultRolesTableSeeder;
+use jeremykenedy\LaravelRoles\Database\Seeders\DefaultUsersTableSeeder;
 
 class RolesServiceProvider extends ServiceProvider
 {
@@ -37,6 +37,9 @@ class RolesServiceProvider extends ServiceProvider
         if (config('roles.rolesGuiEnabled')) {
             $this->loadRoutesFrom(__DIR__.'/routes/web.php');
         }
+        if (config('roles.rolesApiEnabled')) {
+            $this->loadRoutesFrom(__DIR__.'/routes/api.php');
+        }
         $this->loadTranslationsFrom(__DIR__.'/resources/lang/', $this->_packageTag);
         $this->registerBladeExtensions();
     }
@@ -49,12 +52,19 @@ class RolesServiceProvider extends ServiceProvider
     public function register()
     {
         $this->mergeConfigFrom(__DIR__.'/config/roles.php', 'roles');
-        $this->loadMigrationsFrom(__DIR__.'/Database/Migrations');
+        $this->loadMigrations();
         if (config('roles.rolesGuiEnabled')) {
             $this->loadViewsFrom(__DIR__.'/resources/views/', $this->_packageTag);
         }
         $this->publishFiles();
         $this->loadSeedsFrom();
+    }
+
+    private function loadMigrations()
+    {
+        if (config('roles.defaultMigrations.enabled')) {
+            $this->loadMigrationsFrom(__DIR__.'/Database/Migrations');
+        }
     }
 
     /**
@@ -107,14 +117,22 @@ class RolesServiceProvider extends ServiceProvider
         ], $publishTag.'-migrations');
 
         $this->publishes([
-            __DIR__.'/Database/Seeds/publish' => database_path('seeds'),
+            __DIR__.'/Database/Seeders/publish' => database_path('seeds'),
         ], $publishTag.'-seeds');
 
         $this->publishes([
-            __DIR__.'/config/roles.php'       => config_path('roles.php'),
-            __DIR__.'/Database/Migrations'    => database_path('migrations'),
-            __DIR__.'/Database/Seeds/publish' => database_path('seeds'),
+            __DIR__.'/config/roles.php'         => config_path('roles.php'),
+            __DIR__.'/Database/Migrations'      => database_path('migrations'),
+            __DIR__.'/Database/Seeders/publish' => database_path('seeds'),
         ], $publishTag);
+
+        $this->publishes([
+            __DIR__.'/resources/views' => base_path('resources/views/vendor/'.$publishTag),
+        ], $publishTag.'-views');
+
+        $this->publishes([
+            __DIR__.'/resources/lang' => base_path('resources/lang/vendor/'.$publishTag),
+        ], $publishTag.'-lang');
     }
 
     /**
